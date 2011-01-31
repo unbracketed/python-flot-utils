@@ -2,6 +2,11 @@ from functools import partial, wraps
 import json
 
 
+class MissingDataException(Exception):
+    """Exception raised when a series does not contain
+    any data points"""
+
+
 class DuplicateLabelException(Exception):
     """Exception raised when an attempt is made to 
     label a new series with a label already in use"""
@@ -57,6 +62,8 @@ class Flot(object):
         """
         A series is a list of pairs (2-tuples)
         """
+        if not series:
+            raise MissingDataException
         new_series = {'data': series}
         if label and label in [x.get('label', None) for x in self._series]:
             raise DuplicateLabelException
