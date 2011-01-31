@@ -15,7 +15,7 @@ setup(
     keywords = "flot graphs charts javascript data",
     #url = "http://packages.python.org/an_example_pypi_project",
     packages=['pyflot', 'tests'],
-    long_description=read('README'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
