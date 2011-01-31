@@ -2,36 +2,45 @@ from functools import partial, wraps
 import json
 
 
-def as_json(fn):
-    "Decorator that converts output of function to JSON string"
-    import ipdb; ipdb.set_trace()
-    @wraps(fn)
-    def _json(fn):
-        return json.dumps(fn())
-    return _json
-
-
 class DuplicateLabelException(Exception):
     """Exception raised when an attempt is made to 
     label a new series with a label already in use"""
 
 
-
 class Flot(object):
+    """
+    Represents a ``flot`` graph
+
+    This is a Python representation of a flot graph with the
+    goal preserving the flot attribute names and organization
+    of the options. A Flot instance will allow you to 
+    use your Python data structures as is and will handle
+    the details of converting to valid JSON with items 
+    formatted properly for ``flot``. (Handy for time series
+    for example)
+    """
 
     def __init__(self):
         self._series = []
         self._options = {}
 
     @property
-#    @as_json
-    def series_list(self):
+    def series_json(self):
+        """
+        Returns a string with each data series
+        associated with this graph formatted as JSON, 
+        suitable for passing to the ``$.plot`` method.
+        """
         return json.dumps(self._series)
 
-#    @property
-#    @as_json
-    def options(self):
-        pass
+    @property
+    def options_json(self):
+        """
+        Returns a JSON string representing the global options
+        for this graph in a format suitable for passing to 
+        the ``$.plot`` method as the options parameter.
+        """
+        return json.dumps(self._options)
 
     #add_bars
     #add_line
@@ -40,22 +49,22 @@ class Flot(object):
         if value.startswith('add_'):
             return partial(self.add_series_type, value[4:])
 
-    def add_series_type(self, type, series, label=None, **kwargs):
+    def add_series_type(self, line_type, series, label=None, **kwargs):
         method = getattr(self, 'add_series')
-        return method(series, label, **{type: {'show': True}})
+        return method(series, label, **{line_type: {'show': True}})
 
     def add_series(self, series, label=None, **kwargs):
         """
         A series is a list of pairs (2-tuples)
         """
-        s = {'data': series}
+        new_series = {'data': series}
         if label and label in [x.get('label', None) for x in self._series]:
             raise DuplicateLabelException
         elif label:
-            s.update(label=label)
-        for lt in ('bars', 'lines', 'points'):
-            if lt in kwargs:
-                s.update({lt: kwargs[lt]})
-        self._series.append(s)
+            new_series.update(label=label)
+        for line_type in ('bars', 'lines', 'points'):
+            if line_type in kwargs:
+                new_series.update({line_type: kwargs[line_type]})
+        self._series.append(new_series)
 
 
