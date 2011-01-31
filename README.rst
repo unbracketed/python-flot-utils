@@ -11,7 +11,7 @@ For example::
     >>> print f.series_json 
     [{"data": [[1, 1], [2, 2], [3, 3]]}]
 
-In this simple example the `series_json` is a JSON string
-in the format expected by `flot`.
+In this simple example the ``series_json`` is a JSON string
+in the format expected by ``flot``.
 
 .. _flot: http://code.google.com/p/flot/
