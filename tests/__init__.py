@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from pyflot import Flot, MissingDataException, \
@@ -25,6 +26,11 @@ class TestFlot(unittest.TestCase):
         else:
             self.assertFalse('label' in series)
 
+    def test_initial_state(self):
+        "make sure internal structures initialize properly"
+        self.assertEqual(self.flot._series, [])
+        self.assertEqual(self.flot._options, {})
+
     def test_basic_add_series(self):
         "make sure a series can be added with no label or options"
         self.check_add_series(S1)
@@ -49,3 +55,20 @@ class TestFlot(unittest.TestCase):
         "make sure multiple series can be added"
         self.check_add_series(S1)
         self.check_add_series(S1)
+
+    def test_series_json(self):
+        "make sure conversion to JSON works for simple series"
+        self.assertEqual("[]", self.flot.series_json)
+        series = {'data': S1}
+        self.flot.add_series(S1)
+        self.assertEqual(json.dumps([series]), self.flot.series_json)
+
+    def test_series_with_label_json(self):
+    	"make sure series with label converts to JSON properly"
+        series = {'data': S1, 'label': 'label1'}
+        self.flot.add_series(S1, 'label1')
+        self.assertEqual(json.dumps([series]), self.flot.series_json)
+    
+    def test_options_json(self):
+        "make sure conversion to JSON works for default options"
+        self.assertEqual("{}", self.flot.options_json)
