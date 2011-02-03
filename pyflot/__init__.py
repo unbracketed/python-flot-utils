@@ -1,5 +1,22 @@
-from functools import partial, wraps
+import collections
+from functools import partial
+import inspect
 import json
+
+
+def update(d, u):
+    """
+    Recursively update nested dicts
+
+    Credit: Alex Martelli
+    """
+    for k, v in u.iteritems():
+        if isinstance(v, collections.Mapping):
+            r = update(d.get(k, {}), v)
+            d[k] = r
+        else:
+            d[k] = u[k]
+    return d
 
 
 class MissingDataException(Exception):
@@ -28,6 +45,15 @@ class Flot(object):
     def __init__(self):
         self._series = []
         self._options = {}
+
+        #apply any options specified starting with the top
+        #of the inheritance chain
+        bases = list(inspect.getmro(self.__class__))
+        bases.reverse()
+        for base in bases:
+            if hasattr(base, 'options'):
+                update(self._options, base.options)
+
 
     @property
     def series_json(self):

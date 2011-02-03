@@ -10,6 +10,16 @@ SERIES = (
 )
 S1, = SERIES
 
+FAKE_NESTED_OPTIONS = {
+    'level1': {
+        'level2': {
+            'a':1, 
+            'level3': {
+                'b':2}}},
+    'c':3}
+
+
+
 class TestFlot(unittest.TestCase):
 
     def setUp(self):
@@ -64,11 +74,40 @@ class TestFlot(unittest.TestCase):
         self.assertEqual(json.dumps([series]), self.flot.series_json)
 
     def test_series_with_label_json(self):
-    	"make sure series with label converts to JSON properly"
+        "make sure series with label converts to JSON properly"
         series = {'data': S1, 'label': 'label1'}
         self.flot.add_series(S1, 'label1')
         self.assertEqual(json.dumps([series]), self.flot.series_json)
-    
-    def test_options_json(self):
+
+    def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"
         self.assertEqual("{}", self.flot.options_json)
+
+    def test_options(self):
+        "make sure options are applied correctly for a Flot subclass" 
+        class MyFlot(Flot):
+            options = FAKE_NESTED_OPTIONS
+
+        f = MyFlot()
+        self.assertEqual(f._options, FAKE_NESTED_OPTIONS)
+        self.assertEqual(f.options_json,
+                json.dumps(FAKE_NESTED_OPTIONS))
+
+    def test_options_inheritance(self):
+        "make sure options in an inheritance chain are applied correctly"
+        class MyFlot(Flot):
+            options = FAKE_NESTED_OPTIONS
+
+        class AnotherFlot(MyFlot):
+            options = {
+                'level1': {
+                    'd': 4,
+                    'level2': {
+                        'a': 10}}}
+
+        f = AnotherFlot()
+        self.assertEqual(f._options,
+                {'level1': {'d': 4, 'level2': {'a':10, 'level3': {'b':2}}}, 'c':3})
+        #TODO will the dumped dict string match work across platforms?
+        self.assertEqual(f.options_json,
+                 '{"level1": {"level2": {"a": 10, "level3": {"b": 2}}, "d": 4}, "c": 3}')
