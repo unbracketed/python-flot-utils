@@ -2,6 +2,7 @@ import collections
 from functools import partial
 import inspect
 import json
+import time
 
 
 def update(d, u):
@@ -99,5 +100,20 @@ class Flot(object):
             if line_type in kwargs:
                 new_series.update({line_type: kwargs[line_type]})
         self._series.append(new_series)
+
+    def add_time_series(self, series, label=None, **kwargs):
+    	"""
+    	A specialized form of ``add_series`` for adding time-series data.
+
+        Flot requires times to be specified in Javascript timestamp format.
+        This convenience function lets you pass datetime instances and handles
+        the conversion. It also sets the correct option to indicate to ``flot``
+        that the graph should be treated as a time series
+        """
+        _series = [(time.mktime(ts.timetuple()) * 1000, val) \
+                    for ts, val in series]
+        self._options['xaxis'] = {'mode': 'time'}
+        return self.add_series(_series, label, **kwargs)
+
 
 

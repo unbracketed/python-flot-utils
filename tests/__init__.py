@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 import json
 import unittest
 
@@ -78,6 +79,25 @@ class TestFlot(unittest.TestCase):
         series = {'data': S1, 'label': 'label1'}
         self.flot.add_series(S1, 'label1')
         self.assertEqual(json.dumps([series]), self.flot.series_json)
+
+    def test_add_time_series(self):
+        """
+        make sure adding time series works properly:
+
+        * conversion to JS timestamp
+        * time series mode added to options
+        """
+        time_series = [(date(2010, 3, 14) - timedelta(days=i), i) \
+                        for i in range(5)]
+        self.flot.add_time_series(time_series)
+        self.assertEqual(self.flot._series[0]['data'],
+            [(1268553600000.0, 0),
+            (1268467200000.0, 1),
+            (1268380800000.0, 2),
+            (1268294400000.0, 3),
+            (1268208000000.0, 4)])
+        self.assertEqual(self.flot._options['xaxis'],
+                {'mode': 'time'})
 
     def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"
