@@ -110,7 +110,7 @@ class Flot(object):
         the conversion. It also sets the correct option to indicate to ``flot``
         that the graph should be treated as a time series
         """
-        _series = [(time.mktime(ts.timetuple()) * 1000, val) \
+        _series = [(int(time.mktime(ts.timetuple()) * 1000), val) \
                     for ts, val in series]
         self._options['xaxis'] = {'mode': 'time'}
         return self.add_series(_series, label, **kwargs)
