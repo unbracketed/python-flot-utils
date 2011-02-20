@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <script src="https://www.google.com/jsapi?key=ABQIAAAANukEM8Ul3q8QK6jA92_5-RQCULP4XOMyhPd8d_NrQQEO8sT8XBT_0c5Ok50Kg9sBiVGEKZwG52t3pQ" type="text/javascript"></script>
+        <script language="Javascript" type="text/javascript">
+            //<![CDATA[
+            google.load("jquery", "1.5");        
+            //]]>
+        </script>
+        <script type="text/javascript" src="pyflot/templates/jquery.flot.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $.plot($("#testgraph"), {{ graph.series_json|safe }}, {{ graph.options_json|safe }});
+            });
+        </script>
+    </head>
+    <body>
+        <div id="testgraph" style="width:800;height:600"></div>
+    </body>
+</html>

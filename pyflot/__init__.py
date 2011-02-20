@@ -2,6 +2,7 @@ import collections
 from functools import partial
 import inspect
 import json
+import os
 import time
 
 
@@ -102,8 +103,8 @@ class Flot(object):
         self._series.append(new_series)
 
     def add_time_series(self, series, label=None, **kwargs):
-    	"""
-    	A specialized form of ``add_series`` for adding time-series data.
+        """
+        A specialized form of ``add_series`` for adding time-series data.
 
         Flot requires times to be specified in Javascript timestamp format.
         This convenience function lets you pass datetime instances and handles
@@ -115,5 +116,11 @@ class Flot(object):
         self._options['xaxis'] = {'mode': 'time'}
         return self.add_series(_series, label, **kwargs)
 
-
-
+    def get_test_page(self):
+        """Renders a test page"""
+        template = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates', 'test_page.html')).read()
+        template = template.replace("{{ graph.series_json|safe }}", self.series_json)
+        template = template.replace("{{ graph.options_json|safe }}", self.options_json)
+        out = open(os.path.join(os.getcwd(), 'testgraph.html'), 'w')
+        out.write(template)
+        out.close()
