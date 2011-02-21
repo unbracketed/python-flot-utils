@@ -99,6 +99,14 @@ class TestFlot(unittest.TestCase):
         self.assertEqual(self.flot._options['xaxis'],
                 {'mode': 'time'})
 
+    def test_add_bars(self):
+        "test the shortcut for adding a series as bars"
+        series = {'data': ((0,0), ) + S1, 
+                  "bars": {"barWidth": 0.75, "show": True}}
+        self.flot.add_bars(((0,0), ) + S1)
+        self.assertEqual(self.flot._series[0]['bars'], {'show': True})
+        self.assertEqual(json.dumps([series]), self.flot.series_json)
+
     def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"
         self.assertEqual("{}", self.flot.options_json)

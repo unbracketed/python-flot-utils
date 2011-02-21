@@ -1,5 +1,4 @@
 import collections
-
 from functools import partial
 from itertools import chain
 import inspect
@@ -58,7 +57,6 @@ class Flot(object):
             if hasattr(base, 'options'):
                 update(self._options, base.options)
 
-
     @property
     def series_json(self):
         """
@@ -77,10 +75,14 @@ class Flot(object):
         """
         return json.dumps(self._options)
 
-    #add_bars
-    #add_line
-    #add_points
     def __getattr__(self, value):
+        """
+        add_bars
+        add_line
+        add_points
+        
+        provides shortcut methods for adding series using a particular line type
+        """
         if value.startswith('add_'):
             return partial(self.add_series_type, value[4:])
 
