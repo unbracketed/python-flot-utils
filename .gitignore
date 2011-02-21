@@ -3,3 +3,5 @@
 _build
 .coverage
 testgraph.html
+build
+dist
