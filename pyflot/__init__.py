@@ -1,5 +1,7 @@
 import collections
+
 from functools import partial
+from itertools import chain
 import inspect
 import json
 import os
@@ -64,7 +66,7 @@ class Flot(object):
         associated with this graph formatted as JSON, 
         suitable for passing to the ``$.plot`` method.
         """
-        return json.dumps(self._series)
+        return json.dumps([self.prepare_series(s) for s in self._series])
 
     @property
     def options_json(self):
@@ -116,11 +118,31 @@ class Flot(object):
         self._options['xaxis'] = {'mode': 'time'}
         return self.add_series(_series, label, **kwargs)
 
+    def calculate_bar_width(self):
+        slices = max([len(s['data']) for s in self._series])
+        xs = [pair[0] for pair in chain(*[s['data'] for s in self._series])]
+        xmin, xmax = (min(xs), max(xs))
+        w = xmax - xmin
+        return float(w)/slices
+
     def get_test_page(self):
         """Renders a test page"""
-        template = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates', 'test_page.html')).read()
-        template = template.replace("{{ graph.series_json|safe }}", self.series_json)
-        template = template.replace("{{ graph.options_json|safe }}", self.options_json)
+        templatefile = open(os.path.join(
+                                os.path.dirname(os.path.abspath(__file__)),
+                                'templates', 
+                                'test_page.html'))
+        template = templatefile.read()
+        template = template.replace("{{ graph.series_json|safe }}", 
+                                    self.series_json)
+        template = template.replace("{{ graph.options_json|safe }}", 
+                                    self.options_json)
         out = open(os.path.join(os.getcwd(), 'testgraph.html'), 'w')
         out.write(template)
         out.close()
+
+    def prepare_series(self, series):
+        if 'bars' in series:
+            w = self.calculate_bar_width()
+            if w:
+                series['bars']['barWidth'] = w
+        return series
