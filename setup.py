@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "python-flot-utils",
-    version = "0.2",
+    version = "0.2.1",
     author = "Brian Luft",
     author_email = "brian@unbracketed.com",
     description = ("Makes it easy to convert Python data structures" 
