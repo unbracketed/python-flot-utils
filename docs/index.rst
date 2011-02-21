@@ -18,7 +18,7 @@ For example::
 
     >>> import pyflot 
     >>> graph = pyflot.Flot() 
-    >>> graph.add_series([(1, 1), (2, 2), (3, 3)]) 
+    >>> graph.add_line([(1, 1), (2, 2), (3, 3)]) 
     >>> print graph.series_json 
     [{"data": [[1, 1], [2, 2], [3, 3]]}]
 
@@ -26,9 +26,10 @@ In this simple example the ``series_json`` is a JSON string
 in the format expected by ``flot``.
 
 The following Django template snippet shows how you might use 
-it in a Django template::
+it in a Django template:
 
-    
+.. code-block:: HTML+Django/Jinja
+
     <script id="source" language="javascript" type="text/javascript"> 
     $(function () {
         $.plot($("#linear-graph"), {{ graph.series_json|safe }}, {{ graph.options_json|safe }});
