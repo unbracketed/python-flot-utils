@@ -20,7 +20,6 @@ FAKE_NESTED_OPTIONS = {
     'c':3}
 
 
-
 class TestFlot(unittest.TestCase):
 
     def setUp(self):
@@ -67,6 +66,21 @@ class TestFlot(unittest.TestCase):
         self.check_add_series(S1)
         self.check_add_series(S1)
 
+    def test_add_line_types(self):
+        "test the line type shortcuts"
+        for stype in ('bars', 'line', 'points'):
+            getattr(self.flot, 'add_%s' %stype)(S1)
+            self.assertEqual(self.flot._series[0][stype], {'show': True})
+            self.flot._series = []
+
+    def test_add_bars(self):
+        "test the shortcut for adding a series as bars"
+        series = {'data': ((0,0), ) + S1, 
+                  "bars": {"barWidth": 0.75, "show": True}}
+        self.flot.add_bars(((0,0), ) + S1)
+        self.assertEqual(self.flot._series[0]['bars'], {'show': True})
+        self.assertEqual(json.dumps([series]), self.flot.series_json)
+
     def test_series_json(self):
         "make sure conversion to JSON works for simple series"
         self.assertEqual("[]", self.flot.series_json)
@@ -98,14 +112,6 @@ class TestFlot(unittest.TestCase):
             (1268208000000.0, 4)])
         self.assertEqual(self.flot._options['xaxis'],
                 {'mode': 'time'})
-
-    def test_add_bars(self):
-        "test the shortcut for adding a series as bars"
-        series = {'data': ((0,0), ) + S1, 
-                  "bars": {"barWidth": 0.75, "show": True}}
-        self.flot.add_bars(((0,0), ) + S1)
-        self.assertEqual(self.flot._series[0]['bars'], {'show': True})
-        self.assertEqual(json.dumps([series]), self.flot.series_json)
 
     def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"

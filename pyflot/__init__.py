@@ -101,7 +101,7 @@ class Flot(object):
             raise DuplicateLabelException
         elif label:
             new_series.update(label=label)
-        for line_type in ('bars', 'lines', 'points'):
+        for line_type in ('bars', 'line', 'points'):
             if line_type in kwargs:
                 new_series.update({line_type: kwargs[line_type]})
         self._series.append(new_series)
