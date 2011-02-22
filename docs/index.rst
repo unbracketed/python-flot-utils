@@ -30,6 +30,7 @@ it in a Django template:
 
 .. code-block:: HTML+Django/Jinja
 
+    <div id="linear-graph" style="width:600px;height:400px"></div>
     <script id="source" language="javascript" type="text/javascript"> 
     $(function () {
         $.plot($("#linear-graph"), {{ graph.series_json|safe }}, {{ graph.options_json|safe }});

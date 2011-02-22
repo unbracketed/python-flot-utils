@@ -103,7 +103,7 @@ class TestFlot(unittest.TestCase):
         """
         time_series = [(date(2010, 3, 14) - timedelta(days=i), i) \
                         for i in range(5)]
-        self.flot.add_time_series(time_series)
+        self.flot.add_series(time_series)
         self.assertEqual(self.flot._series[0]['data'],
             [(1268553600000.0, 0),
             (1268467200000.0, 1),
@@ -112,6 +112,11 @@ class TestFlot(unittest.TestCase):
             (1268208000000.0, 4)])
         self.assertEqual(self.flot._options['xaxis'],
                 {'mode': 'time'})
+        
+
+    def test_bogus_call(self):
+        "test a bogus method on __getattr__"
+        self.assertRaises(AttributeError, lambda: self.add_shrimp)
 
     def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"
