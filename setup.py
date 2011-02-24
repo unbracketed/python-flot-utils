@@ -14,7 +14,7 @@ setup(
     license = "MIT",
     keywords = "flot graphs charts javascript data timeseries time series",
     #url = "http://packages.python.org/an_example_pypi_project",
-    packages=['pyflot', 'tests'],
+    packages=['pyflot'],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
