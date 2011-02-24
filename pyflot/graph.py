@@ -109,6 +109,8 @@ class Flot(object):
         raise AttributeError
 
     def add_series_type(self, line_type, series, label=None, **kwargs):
+        """Used as a partial by __getattr__ to auto set the line_type
+        for the series."""
         method = getattr(self, 'add_series')
         return method(series, label, **{line_type: True})
 
@@ -132,7 +134,6 @@ class Flot(object):
         #detect time series
         testatom = series[0][0]
         if isinstance(testatom, date):
-
             series = [(int(time.mktime(ts.timetuple()) * 1000), val) \
                         for ts, val in series]
             self._options['xaxis'] = {'mode': 'time'}
@@ -165,14 +166,23 @@ class Flot(object):
         #return self.add_series(_series, label, **kwargs)
 
     def calculate_bar_width(self):
+        """Determines which series has the most data points and then
+        calculates a width for bars based on the range for `x` for that
+        series. Flot treats the barWidth setting in terms of graph
+        units (not pixels)."""
         slices = max([len(s['data']) for s in self._series])
         xs = [pair[0] for pair in chain(*[s['data'] for s in self._series])]
         xmin, xmax = (min(xs), max(xs))
         w = xmax - xmin
         return float(w)/slices
 
-
     def prepare_series(self, series):
+        """Called for each series when the data is being serialized to 
+        JSON. Override to set any options based on characteristics of the
+        series.
+
+        Currently used to ensure that any bars series get a consistent
+        barWidth."""
         if 'bars' in series:
             w = self.calculate_bar_width()
             if w:
