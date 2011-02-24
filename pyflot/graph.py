@@ -1,11 +1,27 @@
+# -*- coding: utf-8 -*-
+"""
+    pyflot.graph
+
+    This module implements the main classes.
+
+    :copyright: (c) 2011 by Brian Luft
+    :license: MIT, see LICENSE for more details.
+"""
+
 import collections
 from datetime import date
 from functools import partial
 from itertools import chain
 import inspect
 import json
-import os
 import time
+
+
+__title__ = 'pyflot'
+__version__ = '0.2.2'
+__author__ = 'Brian Luft'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2011 Brian Luft'
 
 
 def update(d, u):
@@ -155,20 +171,6 @@ class Flot(object):
         w = xmax - xmin
         return float(w)/slices
 
-    def get_test_page(self):
-        """Renders a test page"""
-        templatefile = open(os.path.join(
-                                os.path.dirname(os.path.abspath(__file__)),
-                                'templates', 
-                                'test_page.html'))
-        template = templatefile.read()
-        template = template.replace("{{ graph.series_json|safe }}", 
-                                    self.series_json)
-        template = template.replace("{{ graph.options_json|safe }}", 
-                                    self.options_json)
-        out = open(os.path.join(os.getcwd(), 'testgraph.html'), 'w')
-        out.write(template)
-        out.close()
 
     def prepare_series(self, series):
         if 'bars' in series:
