@@ -1,4 +1,6 @@
 from datetime import date, timedelta
+from functools import partial
+from types import InstanceType, MethodType
 import json
 import unittest
 
@@ -113,11 +115,17 @@ class TestFlot(unittest.TestCase):
         self.assertEqual(self.flot._options['xaxis'],
                 {'mode': 'time'})
         
-
     def test_bogus_call(self):
-        "test a bogus method on __getattr__"
-        self.assertRaises(AttributeError, lambda: self.add_shrimp)
-
+        """make sure explicit and dynamic instance methods work, and that
+        bogus attribute access fails as expected"""
+        self.assertRaises(AttributeError, lambda: self.flot.add_shrimp)
+        self.assertRaises(AttributeError, lambda: self.flot.minus_bars)
+        self.assertRaises(AttributeError, lambda: self.flot.asdf)
+        self.assertTrue(isinstance(self.flot.add_bars, partial))
+        self.assertTrue(isinstance(self.flot.add_line, partial))
+        self.assertTrue(isinstance(self.flot.add_points, partial))
+        self.assertTrue(isinstance(self.flot.add_series, MethodType))
+        
     def test_empty_options_json(self):
         "make sure conversion to JSON works for default options"
         self.assertEqual("{}", self.flot.options_json)

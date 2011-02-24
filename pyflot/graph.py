@@ -104,9 +104,9 @@ class Flot(object):
         provides shortcut methods for adding series using a particular line type
         """
         if value.startswith('add_'):
-            if not value.split('_')[1] in LINE_TYPES:
-            	raise AttributeError
-            return partial(self.add_series_type, value[4:])
+            if value.split('_')[1] in LINE_TYPES:
+                return partial(self.add_series_type, value[4:])
+        raise AttributeError
 
     def add_series_type(self, line_type, series, label=None, **kwargs):
         method = getattr(self, 'add_series')
