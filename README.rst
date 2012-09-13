@@ -26,7 +26,7 @@ it in a Django template::
 
     <script id="source" language="javascript" type="text/javascript"> 
     $(function () {
-        $.plot($("#linear-graph"), {{ graph.series_json|safe }}, {{ graph.options_json|safe }});
+        $.plot($("#linear-graph"), {{ graph.series_json }}, {{ graph.options_json }});
     });
     </script>     
 
