@@ -9,7 +9,7 @@
         <script type="text/javascript" src="pyflot/templates/jquery.flot.min.js"></script>
         <script type="text/javascript">
             $(function () {
-                $.plot($("#testgraph"), {{ graph.series_json|safe }}, {{ graph.options_json|safe }});
+                $.plot($("#testgraph"), {{ graph.series_json }}, {{ graph.options_json }});
             });
         </script>
     </head>
