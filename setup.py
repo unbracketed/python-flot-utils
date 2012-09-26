@@ -13,7 +13,7 @@ setup(
         " to JSON strings suitable for flot series and options"),
     license = "MIT",
     keywords = "flot graphs charts javascript data timeseries time series",
-    #url = "http://packages.python.org/an_example_pypi_project",
+    url='https://github.com/unbracketed/python-flot-utils/',
     packages=['pyflot'],
     long_description=read('README.rst'),
     classifiers=[
